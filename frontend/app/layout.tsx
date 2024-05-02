@@ -28,8 +28,10 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
-        <Header />
-        {children}
+        <main>
+          <Header />
+          {children}
+        </main>
       </body>
     </html>
   );
