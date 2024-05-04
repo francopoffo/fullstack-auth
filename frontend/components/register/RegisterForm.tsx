@@ -2,8 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -14,25 +12,21 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-
-const formSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-  password: z.string().min(2, { message: "Password is required." }),
-  confirmPassword: z.string().min(2, { message: "Password is required." }),
-});
+import { TRegisterFormSchema, registerFormSchema } from "@/types/auth";
 
 const RegisterForm = () => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<TRegisterFormSchema>({
+    resolver: zodResolver(registerFormSchema),
     defaultValues: {
       username: "",
+      password: "",
+      confirmPassword: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: TRegisterFormSchema) {
     console.log(values);
+    form.reset();
   }
 
   return (
@@ -47,7 +41,6 @@ const RegisterForm = () => {
               <FormControl>
                 <Input placeholder="your username" {...field} />
               </FormControl>
-
               <FormMessage />
             </FormItem>
           )}

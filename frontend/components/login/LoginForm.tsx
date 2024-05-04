@@ -2,8 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -15,24 +13,20 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-
-const formSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-  password: z.string().min(2, { message: "Password is required." }),
-});
+import { TLoginFormSchema, loginFormSchema } from "@/types/auth";
 
 export default function LoginForm() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<TLoginFormSchema>({
+    resolver: zodResolver(loginFormSchema),
     defaultValues: {
       username: "",
+      password: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: TLoginFormSchema) {
     console.log(values);
+    form.reset();
   }
 
   return (
@@ -47,7 +41,6 @@ export default function LoginForm() {
               <FormControl>
                 <Input placeholder="your username" {...field} />
               </FormControl>
-
               <FormMessage />
             </FormItem>
           )}
@@ -59,7 +52,7 @@ export default function LoginForm() {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input placeholder="your password" {...field} />
+                <Input placeholder="your password" type="password" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
