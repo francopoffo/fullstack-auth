@@ -14,10 +14,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if err := db.Init(); err != nil {
-		log.Fatal(err)
-	}
-
 	server := api.NewAPIServer(":8080", db)
 
 	if err := server.Run(); err != nil {

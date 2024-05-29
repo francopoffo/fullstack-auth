@@ -10,10 +10,10 @@ import (
 
 type APIServer struct {
 	addr string
-	db   Storage
+	db   *PostgresDB
 }
 
-func NewAPIServer(addr string, db Storage) *APIServer {
+func NewAPIServer(addr string, db *PostgresDB) *APIServer {
 	return &APIServer{
 		addr: addr,
 		db:   db,

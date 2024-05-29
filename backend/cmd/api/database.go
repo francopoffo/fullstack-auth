@@ -1,43 +1,30 @@
 package api
 
 import (
-	"database/sql"
-
 	_ "github.com/lib/pq"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 type PostgresDB struct {
-	db *sql.DB
+	db *gorm.DB
 }
 
-type Storage interface {
-	Close() error
-	Init() error
+type User struct {
+	gorm.Model
+	Email    string `gorm:"unique;not null"`
+	Password string `gorm:"not null"`
 }
 
 func NewPostgresDB() (*PostgresDB, error) {
-	dataSourceName := "postgres://postgres:postgres@database:5432/postgres?sslmode=disable"
-	db, err := sql.Open("postgres", dataSourceName)
+	dsn := "host=database port=5432 user=postgres dbname=postgres password=postgres sslmode=disable"
+
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}
+
+	db.AutoMigrate(&User{})
+
 	return &PostgresDB{db: db}, nil
-}
-
-func (s *PostgresDB) Close() error {
-	return s.db.Close()
-}
-
-func (s *PostgresDB) Init() error {
-	return s.CreateUserTable()
-}
-
-func (s *PostgresDB) CreateUserTable() error {
-	query := `CREATE TABLE IF NOT EXISTS users (
-		id SERIAL PRIMARY KEY,
-		email VARCHAR(255) NOT NULL UNIQUE,
-		password VARCHAR(255) NOT NULL
-	);`
-	_, err := s.db.Exec(query)
-	return err
 }
